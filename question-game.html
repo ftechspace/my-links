@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://fpyf8.com/88/tag.min.js" data-zone="168114" async data-cfasync="false"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Question Selector</title>
+</head>
+<body>
+    <div class="container">
+        <textarea id="question-input" placeholder="Enter questions here, one per line"></textarea>
+        <br>
+        <button id="save-btn">Save Questions</button>
+        <div class="question-box" id="question-box">Press Start to Get a Question</div>
+        <button id="start-btn">Start</button>
+    </div>
+</body>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f9;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        text-align: center;
+    }
+
+    textarea {
+        width: 300px;
+        height: 100px;
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 2px solid #4caf50;
+        border-radius: 5px;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .question-box {
+        margin: 20px;
+        padding: 20px;
+        width: 300px;
+        border: 2px solid #4caf50;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        font-size: 18px;
+        transition: transform 0.3s ease;
+    }
+</style>
+<script>
+const questionInput = document.getElementById('question-input');
+const saveBtn = document.getElementById('save-btn');
+const questionBox = document.getElementById('question-box');
+const startBtn = document.getElementById('start-btn');
+
+// Save questions to local storage
+saveBtn.addEventListener('click', () => {
+    const questions = questionInput.value.split('\n').filter(q => q.trim() !== '');
+    localStorage.setItem('questions', JSON.stringify(questions));
+    alert('Questions saved!');
+    questionInput.value = '';
+});
+
+// Load questions from local storage
+function loadQuestions() {
+    const storedQuestions = localStorage.getItem('questions');
+    return storedQuestions ? JSON.parse(storedQuestions) : [];
+}
+
+// Start button functionality
+startBtn.addEventListener('click', () => {
+    const questions = loadQuestions();
+    if (questions.length === 0) {
+        alert('No questions available. Please save some questions first.');
+        return;
+    }
+
+    startBtn.disabled = true;
+    let iterations = 20;
+    let interval = setInterval(() => {
+        const randomIndex = Math.floor(Math.random() * questions.length);
+        questionBox.textContent = questions[randomIndex];
+        questionBox.style.transform = `scale(${1 + Math.random() * 0.2})`;
+        iterations--;
+        if (iterations <= 0) {
+            clearInterval(interval);
+            questionBox.style.transform = 'scale(1)';
+            startBtn.disabled = false;
+        }
+    }, 100);
+});
+</script>
+</html>
